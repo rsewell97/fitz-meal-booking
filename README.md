@@ -13,7 +13,12 @@ Install for all users -> Select destination -> ensure "add python.exe to Path" i
 
 Open up the Windows/Mac command prompt and type the following commands
 ```
-pip install selenium chromedriver git
+pip install selenium chromedriver
+```
+Now [install Git](https://git-scm.com/downloads)
+
+Back in command prompt, type:
+```
 git clone https://github.com/rsewell97/fitz-meal-booking.git
 cd fitz-meal-booking 
 ```
