@@ -1,4 +1,8 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.by import By
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import base64
 import time
 
@@ -11,7 +15,8 @@ meal_types = {
     '6':'Nut Free'
 }
 
-date_to_book = '21/11/2018'
+crsID, paswd = 'rms207', 'xyz'
+date_to_book = '22/11/2018'
 meal_type = 2
 nut_free = False
 add_info = ''
@@ -35,7 +40,7 @@ months = {
     }
 dmonth = months[dmonth]
 
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(chrome_options=options)
 driver.get('https://collegebills.fitz.cam.ac.uk/collegebill/')
 
 def ravenAuth(crsid,password):
@@ -45,7 +50,13 @@ def ravenAuth(crsid,password):
     tmp.submit()
 
 if 'https://raven.cam.ac.uk/' in driver.current_url:
-    ravenAuth()
+    print("logging in to raven")
+    ravenAuth(crsID,paswd)
+    if 'https://raven.cam.ac.uk/' not in driver.current_url:
+        print("authentication success")
+    else:
+        print("authentication failed")
+        exit()
 
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_btnContinue"]').click()
 #im in
@@ -61,7 +72,7 @@ while (sdate != ddate) and (smonth != dmonth) and (syear != dyear):
         nxt.click()
     else: #right year
         if smonth != dmonth:
-            nxt.click()
+            nxt.click() 
         else: #right month
             table_entries = driver.find_elements_by_tag_name('td')
             table_entries = [x for x in table_entries if x.text.isdigit()]
@@ -80,13 +91,23 @@ while (sdate != ddate) and (smonth != dmonth) and (syear != dyear):
                         break
                 break   
 
+
 #now just actually book it
+print("found date... waiting for booking to be released")
+wait = WebDriverWait(driver, 5)
 while True:
+    wait.until(EC.element_to_be_clickable((By.XPATH,'//*[@id="ContentPlaceHolder1_Menu1"]/ul/li[1]/a')))
     try:
         driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_btnBook"]').click()
+        print("found booking")
         break
     except:
-        time.sleep(10)
+        pass
+    time.sleep(10)
+    driver.refresh()
+    
+print("now just need to specify info and book")
+
 
 #now on booking page
 meal = driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_lstMeals"]')
@@ -98,5 +119,6 @@ if nut_free:
     driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_lstDietary_0"]').click()
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_txtXtraInfo"]').send_keys(add_info)
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_btnBook"]').click()  #submit booking
+print("booked event for {}/{}/{}".format(sdate,smonth,syear))
 
-driver.quit()   #quit
+# driver.quit()   #quit
