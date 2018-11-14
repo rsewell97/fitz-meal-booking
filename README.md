@@ -15,14 +15,19 @@ Open up the Windows/Mac command prompt and type the following commands
 ```
 pip install selenium chromedriver
 ```
-Now [install Git](https://git-scm.com/downloads)
+### Either (recommended):
+Download ZIP file (by clicking the green button in the top right) and extract file.
 
-Back in command prompt, type:
+### Or:
+[install Git](https://git-scm.com/downloads)
+
+Then, back in command prompt, type:
 ```
 git clone https://github.com/rsewell97/fitz-meal-booking.git
 cd fitz-meal-booking 
 ```
 
+### To Run
 Open the file in Notepad by simply typing `automateBook.py` into the command prompt. Edit all relevant parameters in lines 18-22. and save. Now finally type 
 ```
 python automateBook.py
