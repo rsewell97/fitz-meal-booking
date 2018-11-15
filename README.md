@@ -1,5 +1,5 @@
 # fitz-meal-booking
-Automate fitz meal booking to beat the queue. In python based on Selenium
+Automate [fitz meal booking](https://collegebills.fitz.cam.ac.uk/collegebill/Main.aspx) to beat the queue. In python based on Selenium
 
 Simply enter your crsID and password when the authentication is called. Enter dietary preferences and booking date at top and it will refresh every 10secs to ensure you are booked on to the meal
 
