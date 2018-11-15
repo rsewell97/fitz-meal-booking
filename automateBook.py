@@ -40,7 +40,7 @@ months = {
     }
 dmonth = months[dmonth]
 
-driver = webdriver.Chrome(chrome_options=options)
+driver = webdriver.Chrome()
 driver.get('https://collegebills.fitz.cam.ac.uk/collegebill/')
 
 def ravenAuth(crsid,password):
@@ -48,15 +48,15 @@ def ravenAuth(crsid,password):
     tmp = driver.find_element_by_name('pwd')
     tmp.send_keys(password)
     tmp.submit()
+    if 'https://raven.cam.ac.uk/' not in driver.current_url:
+        print("Auth success")
+    else:
+        raise RuntimeError("Authentication Failed: Check crsID and/or password")
 
 if 'https://raven.cam.ac.uk/' in driver.current_url:
-    print("logging in to raven")
+    print("Logging in to Raven")
     ravenAuth(crsID,paswd)
-    if 'https://raven.cam.ac.uk/' not in driver.current_url:
-        print("authentication success")
-    else:
-        print("authentication failed")
-        exit()
+
 
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_btnContinue"]').click()
 #im in
@@ -93,20 +93,23 @@ while (sdate != ddate) and (smonth != dmonth) and (syear != dyear):
 
 
 #now just actually book it
-print("found date... waiting for booking to be released")
-wait = WebDriverWait(driver, 5)
+print("Found date... waiting for booking to be released")
+wait = WebDriverWait(driver, 10)
 while True:
     wait.until(EC.element_to_be_clickable((By.XPATH,'//*[@id="ContentPlaceHolder1_Menu1"]/ul/li[1]/a')))
     try:
         driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_btnBook"]').click()
-        print("found booking")
+        print("Found booking")
         break
     except:
         pass
     time.sleep(10)
     driver.refresh()
+
+    if 'https://raven.cam.ac.uk/' in driver.current_url:
+        ravenAuth(crsID,paswd)
     
-print("now just need to specify info and book")
+print("Specify info and book")
 
 
 #now on booking page
@@ -119,6 +122,6 @@ if nut_free:
     driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_lstDietary_0"]').click()
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_txtXtraInfo"]').send_keys(add_info)
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_btnBook"]').click()  #submit booking
-print("booked event for {}/{}/{}".format(sdate,smonth,syear))
+print("BOOKED EVENT FOR {}/{}/{}".format(sdate,smonth,syear))
 
 # driver.quit()   #quit
