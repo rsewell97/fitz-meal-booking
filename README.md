@@ -15,7 +15,7 @@ Open up the Windows/Mac command prompt and type the following command
 ```
 pip install selenium
 ```
-Now depending on what browser you want to use:
+Now depending on what browser you want to use - moral of the story, use Chrome:
 #### Chrome
 run `pip install chromedriver`
 #### Safari
@@ -23,8 +23,9 @@ To find the develop menu, go to Safari's advanced settings and enable it. Under 
 Run `safaridriver -p 5555` in the command prompt
 #### Edge
 V quick download [here](https://download.microsoft.com/download/F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD/MicrosoftWebDriver.exe)
+Then run `DISM.exe /Online /Add-Capability /CapabilityName:Microsoft.WebDriver~~~~0.0.1.0` as administrator
 #### Firefox
-Don't go there
+Don't even try
 
 
 ### Either (recommended):
