@@ -11,10 +11,22 @@ Download python 3.7 [here](https://www.python.org/ftp/python/3.7.1/python-3.7.1-
 
 Install for all users -> Select destination -> ensure "add python.exe to Path" is checked -> advance and install.
 
-Open up the Windows/Mac command prompt and type the following commands
+Open up the Windows/Mac command prompt and type the following command
 ```
-pip install selenium chromedriver
+pip install selenium
 ```
+Now depending on what browser you want to use:
+#### Chrome
+run `pip install chromedriver`
+#### Safari
+To find the develop menu, go to Safari's advanced settings and enable it. Under the Develop menu, check the 'Allow Remote Automation'
+Run `safaridriver -p 5555` in the command prompt
+#### Edge
+V quick download [here](https://download.microsoft.com/download/F/8/A/F8AF50AB-3C3A-4BC4-8773-DC27B32988DD/MicrosoftWebDriver.exe)
+#### Firefox
+Don't go there
+
+
 ### Either (recommended):
 Download ZIP file (by clicking the green button in the top right) and extract file.
 
