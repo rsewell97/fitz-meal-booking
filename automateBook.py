@@ -21,27 +21,10 @@ meal_type = 2
 nut_free = False
 add_info = ''
 
-ddate, dmonth, dyear = date_to_book.split('/')
 meal_type = meal_types[str(meal_type)]
 
-months = {
-    '01': 'Jan',
-    '02': 'Feb',
-    '03': 'Mar',
-    '04': 'Apr',
-    '05': 'May',
-    '06': 'Jun',
-    '07': 'Jul',
-    '08': 'Aug',
-    '09': 'Sep',
-    '10': 'Oct',
-    '11': 'Nov',
-    '12': 'Dec'
-    }
-dmonth = months[dmonth]
-
 driver = webdriver.Chrome()
-driver.get('https://collegebills.fitz.cam.ac.uk/collegebill/')
+driver.get('https://collegebills.fitz.cam.ac.uk/collegebill/Main.aspx?currentDate={}'.format(date_to_book))
 
 def ravenAuth(crsid,password):
     print("Logging into Raven")
@@ -56,42 +39,11 @@ def ravenAuth(crsid,password):
         raise RuntimeError("Authentication Failed: Check crsID and/or password")
 
 
-if 'https://raven.cam.ac.uk/' in driver.current_url:
+if 'https://raven.cam.ac.uk' in driver.current_url:
     ravenAuth(crsID,paswd)
 
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_btnContinue"]').click()
-#im in
-
-sdate, smonth, syear = 0,'',0
-while (sdate != ddate) or (smonth != dmonth) or (syear != dyear):
-    _, sdate, smonth, syear = driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_lblSitting"]').text.split(' ')
-
-    nxt = driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_calMealDates"]/tbody/tr[1]/td/table/tbody/tr/td[3]/a')
-    prv = driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_calMealDates"]/tbody/tr[1]/td/table/tbody/tr/td[1]/a')
-
-    curr_month, curr_year = driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_calMealDates"]/tbody/tr[1]/td/table/tbody/tr/td[2]').text.split(' ')
-    curr_month = curr_month[:3]
-
-    if int(curr_year) < int(dyear):
-        nxt.click()
-    else: #right year
-        if curr_month != dmonth:
-            nxt.click() 
-        else: #right month
-            table_entries = [x for x in driver.find_elements_by_tag_name('td') if x.text.isdigit()]
-            if int(ddate) < 15:
-                #iterate from start
-                for i in table_entries:
-                    if int(i.text) == int(ddate):
-                        i.click()  
-                        break
-            else:
-                #iterate from end            
-                for i in reversed(table_entries):
-                    if int(i.text) == int(ddate):
-                        i.click() 
-                        break
-    print(sdate,curr_month,curr_year)
+#authenticated
 
 #now just actually book it
 print("Found date... waiting for booking to be released")
@@ -107,7 +59,7 @@ while True:
     time.sleep(10)
     driver.refresh()
 
-    if 'https://raven.cam.ac.uk/' in driver.current_url:
+    if 'https://raven.cam.ac.uk' in driver.current_url:
         ravenAuth(crsID,paswd)
     
 
@@ -123,6 +75,5 @@ if nut_free:
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_txtXtraInfo"]').send_keys(add_info)
 driver.find_element_by_xpath('//*[@id="ContentPlaceHolder1_btnBook"]').click()  #submit booking
 
-print("BOOKED EVENT FOR {}/{}/{}, see booking here:".format(sdate,smonth,syear))
-print(driver.current_url)
+print("BOOKED EVENT FOR {}, see booking here: {}".format(date_to_book,driver.current_url))
 driver.quit()   #quit
